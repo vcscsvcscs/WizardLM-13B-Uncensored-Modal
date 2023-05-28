@@ -1,0 +1,29 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_MODAL_LABS_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_MODAL_LABS_TOKEN_SECRET }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install python
+        run: |
+         apt update && apt -y upgrade 
+         apt install -y python3.9
+         apt install -y python3-pip
+
+      - name: Install Modal client package and jupytext
+        run: pip3 install modal-client jupytext pydantic
+
+      - name: Run deployment script
+        run: |
+            modal deploy app.py
